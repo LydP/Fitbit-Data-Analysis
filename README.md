@@ -42,3 +42,5 @@ This is my analysis and conclusions presented in the form of a report.
 ### Other
 
 The DB file mentioned above is [here](https://drive.google.com/file/d/1JMh5irBVTTiU-9isfxUSkvOTYMhT9PbK/view?usp=sharing).
+
+The Tableau plots used in the report along with other plots are [here](https://public.tableau.com/views/fitabase/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link).
