@@ -1,104 +1,104 @@
 /*amount of each day spent in high activity*/
--- SELECT
--- 	avg(avg_percents) AS percent_high_activity,
--- 	(avg(avg_percents) / 100) * (24 * 60) AS minutes_per_day
--- FROM
--- 	(SELECT 
--- 		(avg(VeryActiveMinutes) + avg(FairlyActiveMinutes)) / (avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) + avg(SedentaryMinutes) + avg(LightlyActiveMinutes)) * 100 AS avg_percents
--- 	FROM dailyActivity
--- 	GROUP BY Id)
+SELECT
+	avg(avg_percents) AS percent_high_activity,
+	(avg(avg_percents) / 100) * (24 * 60) AS minutes_per_day
+FROM
+	(SELECT 
+		(avg(VeryActiveMinutes) + avg(FairlyActiveMinutes)) / (avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) + avg(SedentaryMinutes) + avg(LightlyActiveMinutes)) * 100 AS avg_percents
+	FROM dailyActivity
+	GROUP BY Id)
 
 /*average number of sleep records per user*/
--- SELECT 
--- 	avg(count_id)
--- FROM (SELECT count(Id) AS count_id
--- 	FROM sleepDay_merged
--- 	GROUP BY Id)
+SELECT 
+	avg(count_id)
+FROM (SELECT count(Id) AS count_id
+	FROM sleepDay_merged
+	GROUP BY Id)
 
 /*delete duplicates in minuteSleep_merged table*/
--- DELETE FROM minuteSleep_merged
--- WHERE ROWID IN 
--- 	(SELECT min(ROWID)
--- 	FROM minuteSleep_merged
--- 	GROUP BY Id, date
--- 	HAVING count(*) > 1)
+DELETE FROM minuteSleep_merged
+WHERE ROWID IN 
+	(SELECT min(ROWID)
+	FROM minuteSleep_merged
+	GROUP BY Id, date
+	HAVING count(*) > 1)
 
 /*find duplicates in minuteSleep_merged table*/
--- SELECT
--- 	Id,
--- 	date,
--- 	count(DISTINCT date)
--- FROM minuteSleep_merged
--- GROUP BY Id, date
--- HAVING count(*) > 1
+SELECT
+	Id,
+	date,
+	count(DISTINCT date)
+FROM minuteSleep_merged
+GROUP BY Id, date
+HAVING count(*) > 1
 
 /*users who slept with device*/
--- SELECT 
--- 	count(DISTINCT Id) AS slept_with_device,
--- 	100 * count(DISTINCT Id) / 33.0 AS percent_device,
--- 	100 * (33 - count(DISTINCT Id)) / 33.0 AS percent_no_device
--- FROM sleepDay_merged
+SELECT 
+	count(DISTINCT Id) AS slept_with_device,
+	100 * count(DISTINCT Id) / 33.0 AS percent_device,
+	100 * (33 - count(DISTINCT Id)) / 33.0 AS percent_no_device
+FROM sleepDay_merged
 
 /*weight log info*/
--- SELECT 
--- 	count(*) AS  total_logs,
--- 	count(DISTINCT Id)  as uniq_ids,
--- 	(SELECT count(IsManualReport)
--- 		FROM weightLogInfo_merged
--- 		WHERE IsManualReport = 'True') as true_vals,
--- 	(SELECT count(IsManualReport)
--- 		FROM weightLogInfo_merged
--- 		WHERE IsManualReport = 'False') as false_vals,
--- 	(SELECT count(DISTINCT Id)
--- 		FROM weightLogInfo_merged
--- 		WHERE IsManualReport = 'True') AS 'manual_user',
--- 	(SELECT count(DISTINCT Id)
--- 		FROM weightLogInfo_merged
--- 		WHERE IsManualReport = 'False') AS 'automatic_user',
--- 	100 * count(DISTINCT Id) / 33.0 AS percent_logged,	
--- 	100 * (SELECT count(IsManualReport)
--- 		FROM weightLogInfo_merged
--- 		WHERE IsManualReport = 'True') / CAST(count(*) AS float) AS percent_true,
--- 	100 * (SELECT count(IsManualReport)
--- 		FROM weightLogInfo_merged
--- 		WHERE IsManualReport = 'False') / CAST(count(*) AS float) AS percent_false,
--- 	100 * (SELECT count(DISTINCT Id)
--- 		FROM weightLogInfo_merged
--- 		WHERE IsManualReport = 'True') / CAST(count(DISTINCT Id) AS float) AS 'true_user_percent',
--- 	100 * (SELECT count(DISTINCT Id)
--- 		FROM weightLogInfo_merged
--- 		WHERE IsManualReport = 'False') / CAST(count(DISTINCT Id) AS float) AS 'false_user_percent'
--- FROM weightLogInfo_merged
+SELECT 
+	count(*) AS  total_logs,
+	count(DISTINCT Id)  as uniq_ids,
+	(SELECT count(IsManualReport)
+		FROM weightLogInfo_merged
+		WHERE IsManualReport = 'True') as true_vals,
+	(SELECT count(IsManualReport)
+		FROM weightLogInfo_merged
+		WHERE IsManualReport = 'False') as false_vals,
+	(SELECT count(DISTINCT Id)
+		FROM weightLogInfo_merged
+		WHERE IsManualReport = 'True') AS 'manual_user',
+	(SELECT count(DISTINCT Id)
+		FROM weightLogInfo_merged
+		WHERE IsManualReport = 'False') AS 'automatic_user',
+	100 * count(DISTINCT Id) / 33.0 AS percent_logged,	
+	100 * (SELECT count(IsManualReport)
+		FROM weightLogInfo_merged
+		WHERE IsManualReport = 'True') / CAST(count(*) AS float) AS percent_true,
+	100 * (SELECT count(IsManualReport)
+		FROM weightLogInfo_merged
+		WHERE IsManualReport = 'False') / CAST(count(*) AS float) AS percent_false,
+	100 * (SELECT count(DISTINCT Id)
+		FROM weightLogInfo_merged
+		WHERE IsManualReport = 'True') / CAST(count(DISTINCT Id) AS float) AS 'true_user_percent',
+	100 * (SELECT count(DISTINCT Id)
+		FROM weightLogInfo_merged
+		WHERE IsManualReport = 'False') / CAST(count(DISTINCT Id) AS float) AS 'false_user_percent'
+FROM weightLogInfo_merged
 
 /*average steps and average active minutes per day*/
--- SELECT 
--- 	avg(TotalSteps),
--- 	avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) AS active_minutes
--- FROM dailyActivity
+SELECT 
+	avg(TotalSteps),
+	avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) AS active_minutes
+FROM dailyActivity
 
 /*average steps and average active minutes per day for each user*/
--- SELECT 
--- 	Id,
--- 	avg(TotalSteps) AS steps,
--- 	avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) AS active_minutes
--- FROM dailyActivity
--- GROUP BY Id
--- ORDER BY active_minutes DESC
+SELECT 
+	Id,
+	avg(TotalSteps) AS steps,
+	avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) AS active_minutes
+FROM dailyActivity
+GROUP BY Id
+ORDER BY active_minutes DESC
 
 /*inactive minutes*/
--- SELECT 
--- 	avg(SedentaryMinutes) + avg(LightlyActiveMinutes) AS inactive_minutes
--- FROM dailyActivity
+SELECT 
+	avg(SedentaryMinutes) + avg(LightlyActiveMinutes) AS inactive_minutes
+FROM dailyActivity
 
 /*average activity times and percent levels of high and low activity for each user*/
--- SELECT 
--- 	Id,
--- 	avg(VeryActiveMinutes) AS avg_very,
--- 	avg(FairlyActiveMinutes) AS avg_fairly,
--- 	avg(LightlyActiveMinutes) AS avg_lightly,
--- 	avg(SedentaryMinutes) AS avg_sedentary,	
--- 	avg(VeryActiveMinutes + FairlyActiveMinutes + SedentaryMinutes + LightlyActiveMinutes) as avg_sums,
--- 	((avg(VeryActiveMinutes) + avg(FairlyActiveMinutes)) / avg(VeryActiveMinutes + FairlyActiveMinutes + SedentaryMinutes + LightlyActiveMinutes)) * 100 AS active_percents,
--- 	((avg(LightlyActiveMinutes) + avg(SedentaryMinutes)) / avg(VeryActiveMinutes + FairlyActiveMinutes + SedentaryMinutes + LightlyActiveMinutes)) * 100 AS inactive_percents
--- FROM dailyActivity
--- GROUP BY Id
+SELECT 
+	Id,
+	avg(VeryActiveMinutes) AS avg_very,
+	avg(FairlyActiveMinutes) AS avg_fairly,
+	avg(LightlyActiveMinutes) AS avg_lightly,
+	avg(SedentaryMinutes) AS avg_sedentary,	
+	avg(VeryActiveMinutes + FairlyActiveMinutes + SedentaryMinutes + LightlyActiveMinutes) as avg_sums,
+	((avg(VeryActiveMinutes) + avg(FairlyActiveMinutes)) / avg(VeryActiveMinutes + FairlyActiveMinutes + SedentaryMinutes + LightlyActiveMinutes)) * 100 AS active_percents,
+	((avg(LightlyActiveMinutes) + avg(SedentaryMinutes)) / avg(VeryActiveMinutes + FairlyActiveMinutes + SedentaryMinutes + LightlyActiveMinutes)) * 100 AS inactive_percents
+FROM dailyActivity
+GROUP BY Id
