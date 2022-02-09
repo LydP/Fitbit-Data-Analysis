@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is my analysis of Divvy Fitbit data for the Google Data Analytics certificate capstone project. My certificate can be seen [here](https://www.credly.com/badges/6e51f2de-b45a-4e2e-bff1-3da04eff93de). This repository contains the SQBPRO file in which I wrote SQLite queries for the data and my analysis and conclusions in a PDF report.
+This is my analysis of Divvy Fitbit data for the Google Data Analytics certificate capstone project. My certificate can be seen [here](https://www.credly.com/badges/6e51f2de-b45a-4e2e-bff1-3da04eff93de). This repository contains the SQBPRO file in which I wrote SQLite queries for the data ,my analysis and conclusions in a PDF report, and a PDF containing an explanation of the data used in this analysis.
 
 ## Data
 
@@ -38,6 +38,10 @@ I added the above CSV files as tables to a SQLite DB file using DB Browser for S
 ### Bellabeat_report.pdf
 
 This is my analysis and conclusions presented in the form of a report.
+
+### Fitabase_Data_Dictionary.pdf
+
+This PDF contains metadata for the CSVs I used in my analysis.
 
 ### Other
 
